@@ -228,7 +228,7 @@
     <button id="generarBtn" type="button">Generar documento</button>
   </div>
 
-  <div class="footer-note">Grupo Semgroup · Sistema interno de gestión documental · Versión 2.0 con Panel de Clientes</div>
+  <div class="footer-note">Grupo Semgroup · Sistema interno de gestión documental · Versión 2.1 con Panel de Clientes</div>
 </div>
 </div><!-- /viewAutollenado -->
 
@@ -306,12 +306,12 @@
 
   async function pcLoadCompanyDetail(empresaId){
     const [representantes, accionistas, cuentas, financiera, referencias, condiciones] = await Promise.all([
-      sb(`representantes?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
-      sb(`accionistas?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}&order=porcentaje_participacion.desc`),
-      sb(`cuentas_bancarias?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
-      sb(`informacion_financiera?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}&order=anio.desc`),
-      sb(`referencias?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
-      sb(`condiciones_comerciales?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
+      window.semgroupSupabaseRequest(`representantes?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
+      window.semgroupSupabaseRequest(`accionistas?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}&order=porcentaje_participacion.desc`),
+      window.semgroupSupabaseRequest(`cuentas_bancarias?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
+      window.semgroupSupabaseRequest(`informacion_financiera?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}&order=anio.desc`),
+      window.semgroupSupabaseRequest(`referencias?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
+      window.semgroupSupabaseRequest(`condiciones_comerciales?select=*&empresa_id=eq.${encodeURIComponent(empresaId)}`),
     ]);
     return { representantes, accionistas, cuentas, financiera, referencias, condiciones };
   }
@@ -506,7 +506,7 @@
   async function pcInit(){
     const root = document.getElementById('pcRoot');
     try{
-      pcEmpresas = await sb('empresas?select=*&order=razon_social.asc');
+      pcEmpresas = await window.semgroupSupabaseRequest('empresas?select=*&order=razon_social.asc');
       if(!pcEmpresas.length){
         root.innerHTML = `<div class="pc-empty">No hay empresas registradas.</div>`;
         return;
@@ -775,6 +775,7 @@ async function sb(path){
   }
   return res.json();
 }
+window.semgroupSupabaseRequest = sb;
 
 /* ---------- normalización y matching ---------- */
 function normalize(s){
